@@ -45,6 +45,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'drf_spectacular',
+    
+    # Local apps
+    'apps.invoices',
+    'apps.transactions',
 ]
 
 MIDDLEWARE = [
