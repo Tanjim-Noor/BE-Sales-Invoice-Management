@@ -39,6 +39,7 @@ def prevent_last_item_deletion(sender, instance, **kwargs):
 def update_invoice_total(sender, instance, **kwargs):
     """
     Automatically recalculate invoice total when items are added, updated, or deleted.
+    Also updates the Sale transaction amount to match the invoice total.
     
     Args:
         sender: The model class (InvoiceItem)
@@ -54,12 +55,23 @@ def update_invoice_total(sender, instance, **kwargs):
     if invoice.total_amount != total:
         invoice.total_amount = total
         invoice.save(update_fields=['total_amount', 'updated_at'])
+    
+    # Update the Sale transaction amount to match invoice total
+    try:
+        sale_transaction = invoice.transactions.get(transaction_type='Sale')
+        if sale_transaction.amount != total:
+            sale_transaction.amount = total
+            sale_transaction.save(update_fields=['amount'])
+    except Transaction.DoesNotExist:
+        # Sale transaction doesn't exist yet (shouldn't happen normally)
+        pass
 
 
 @receiver(post_save, sender=Invoice)
 def create_sale_transaction(sender, instance, created, **kwargs):
     """
     Automatically create a 'Sale' transaction when a new invoice is created.
+    Initial amount is 0, will be updated when items are added.
     
     Args:
         sender: The model class (Invoice)
@@ -68,11 +80,12 @@ def create_sale_transaction(sender, instance, created, **kwargs):
         **kwargs: Additional signal arguments
     """
     if created:
-        # Create a Sale transaction for the newly created invoice
+        # Create a Sale transaction immediately with amount = 0
+        # Amount will be updated when invoice items are added
         Transaction.objects.create(
             invoice=instance,
             transaction_type='Sale',
-            amount=instance.total_amount,
+            amount=instance.total_amount,  # Initially 0
             description=f"Sale transaction for invoice {instance.reference_number}",
             created_by=instance.created_by
         )
