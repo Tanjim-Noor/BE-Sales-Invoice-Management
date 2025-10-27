@@ -187,6 +187,7 @@ class InvoiceCreateSerializer(serializers.ModelSerializer):
     
     Handles invoice creation with automatic total calculation,
     nested item creation, and signal-triggered transaction generation.
+    Returns detailed invoice representation after creation.
     """
     items = InvoiceItemSerializer(many=True)
     
@@ -353,6 +354,18 @@ class InvoiceCreateSerializer(serializers.ModelSerializer):
         # The 'Sale' transaction will be created automatically via signal
         
         return invoice
+    
+    def to_representation(self, instance) -> dict:
+        """
+        Return detailed invoice representation after creation.
+        
+        Args:
+            instance: The created invoice instance
+            
+        Returns:
+            dict: Serialized invoice data with all fields including id
+        """
+        return InvoiceDetailSerializer(instance, context=self.context).data  # type: ignore[return-value]
 
 
 class InvoiceUpdateSerializer(serializers.ModelSerializer):
