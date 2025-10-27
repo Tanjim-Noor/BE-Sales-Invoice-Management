@@ -18,8 +18,6 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-p3l-hoiszz#lp3v7p47!p6gx6c0&23gaig&he1gvkxjml08fq9')
@@ -84,7 +82,6 @@ WSGI_APPLICATION = 'invoice_management.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -99,7 +96,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -118,7 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -130,18 +125,15 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # REST Framework Configuration
-# https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -170,7 +162,6 @@ REST_FRAMEWORK = {
 
 
 # Simple JWT Configuration
-# https://django-rest-framework-simplejwt.readthedocs.io/
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -189,7 +180,6 @@ SIMPLE_JWT = {
 
 
 # CORS Configuration
-# https://github.com/adamchainz/django-cors-headers
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
     default='http://localhost:3000,http://127.0.0.1:3000',
@@ -221,7 +211,6 @@ CORS_ALLOW_HEADERS = [
 
 
 # drf-spectacular Configuration
-# https://drf-spectacular.readthedocs.io/
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Sales Invoice Management API',
     'DESCRIPTION': 'RESTful API for managing sales invoices and transactions',
@@ -229,4 +218,19 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     'SCHEMA_PATH_PREFIX': '/api/',
     'COMPONENT_SPLIT_REQUEST': True,
+    # JWT Authentication configuration for Swagger UI
+    'SECURITY': [
+        {
+            'Bearer': []
+        }
+    ],
+    'COMPONENTS': {
+        'securitySchemes': {
+            'Bearer': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT',
+            }
+        }
+    },
 }
