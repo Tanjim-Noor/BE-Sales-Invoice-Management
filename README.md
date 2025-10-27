@@ -145,6 +145,56 @@ BE-Sales-Invoice-Management/
 └── README.md                 # This file
 ```
 
+## 🧪 Running Tests
+
+The project includes comprehensive test coverage for invoice creation and payment workflows.
+
+### Run All Tests
+
+```bash
+python manage.py test
+```
+
+### Run Tests for Specific App
+
+```bash
+# Test invoices app only
+python manage.py test apps.invoices.tests
+
+# Test transactions app only
+python manage.py test apps.transactions.tests
+```
+
+### Run Tests with Verbose Output
+
+```bash
+python manage.py test --verbosity=2
+```
+
+### Run Specific Test Case or Method
+
+```bash
+# Run specific test class
+python manage.py test apps.invoices.tests.InvoiceTestCase
+
+# Run specific test method
+python manage.py test apps.invoices.tests.InvoiceTestCase.test_create_invoice_with_valid_data
+```
+
+### Test Coverage
+
+The test suite covers:
+- ✅ Invoice creation with valid data
+- ✅ Invoice creation validation (requires items)
+- ✅ Invoice creation requires authentication
+- ✅ Sale transaction created automatically
+- ✅ Invoice payment workflow
+- ✅ Payment transaction created automatically
+- ✅ Cannot pay already paid invoice
+- ✅ Payment requires authentication
+
+**Note:** Django automatically creates and destroys a test database for each test run. No need to configure a separate test database.
+
 ## 🔧 Configuration
 
 Key environment variables in `.env`:
