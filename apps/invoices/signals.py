@@ -15,6 +15,7 @@ from apps.transactions.models import Transaction
 def prevent_last_item_deletion(sender, instance, **kwargs):
     """
     Prevent deletion of the last item in an invoice.
+    Only applies when deleting individual items, not when the entire invoice is being deleted.
     
     Args:
         sender: The model class (InvoiceItem)
@@ -25,6 +26,11 @@ def prevent_last_item_deletion(sender, instance, **kwargs):
         ValidationError: If attempting to delete the last item
     """
     invoice = instance.invoice
+    
+    # Check if this is part of a cascade deletion (invoice being deleted)
+    # origin is passed via kwargs when part of a cascade deletion
+    if kwargs.get('origin'):
+        return
     
     # Check if this is the last item
     if invoice.items.count() <= 1:
